@@ -18,9 +18,9 @@ class TaskAdapter(private val tasks: MutableList<Pair<String, String>>) : Recycl
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.binding.taskTitle.text = "Task #${position + 1}"
-        holder.binding.taskName.text = tasks[position].first
-        holder.binding.taskTimestamp.text = tasks[position].second
+        holder.binding.taskTitle.text = tasks[position].first
+        holder.binding.taskName.text = tasks[position].second
+        holder.binding.taskTimestamp.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
     override fun getItemCount(): Int = tasks.size
@@ -30,9 +30,8 @@ class TaskAdapter(private val tasks: MutableList<Pair<String, String>>) : Recycl
         notifyItemRemoved(position)
     }
 
-    fun addItem(task: String) {
-        val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-        tasks.add(Pair(task, timestamp))
+    fun addItem(task: Pair<String, String>) {
+        tasks.add(task)
         notifyItemInserted(tasks.size - 1)
     }
 }
