@@ -1,6 +1,7 @@
 package ph.edu.auf.delrosario.angelo.midtermexam
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -30,14 +31,18 @@ class MainActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val task = tasks[position]
-                val taskNumber = task.first.split(" ")[1].toInt()
-                removedTaskNumbers.add(taskNumber)
-                taskAdapter.removeItem(position)
-                Snackbar.make(binding.recyclerView, "Task deleted", Snackbar.LENGTH_LONG)
-                    .setAction("UNDO") {
-                        taskAdapter.addItem(task)
-                        removedTaskNumbers.remove(taskNumber)
-                    }.show()
+                val taskNumber = task.first.split("#")[1].trim().toIntOrNull()
+                if (taskNumber != null) {
+                    removedTaskNumbers.add(taskNumber)
+                    taskAdapter.removeItem(position)
+                    Snackbar.make(binding.recyclerView, "Task deleted", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO") {
+                            taskAdapter.addItem(task)
+                            removedTaskNumbers.remove(taskNumber)
+                        }.show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Error parsing task number", Toast.LENGTH_SHORT).show()
+                }
             }
         })
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
@@ -67,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 taskAdapter.addItem(task)
                 removedTaskNumbers.remove(taskNumber)
                 binding.editTextTask.text.clear()
+                Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("No", null)
             .show()
